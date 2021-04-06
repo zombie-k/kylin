@@ -18,5 +18,5 @@ func (s *promSummaryVec) Observe(v int64, label ...string) {
 func NewSummaryVec(opts prometheus.SummaryOpts, labels []string) SummaryVec {
 	sum := prometheus.NewSummaryVec(opts, labels)
 	prometheus.MustRegister(sum)
-	return &promSummaryVec{summary:sum}
+	return &promSummaryVec{summary: sum}
 }

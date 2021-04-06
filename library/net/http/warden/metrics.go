@@ -16,7 +16,7 @@ var (
 		Subsystem:  "requests",
 		Name:       "quantile",
 		Help:       "http client requests quantile",
-		Objectives: map[float64]float64{0.5:0.05, 0.9:0.01, 0.99:0.001},
+		Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
 	}, []string{"path", "method"})
 
 	_metricClientRequestDuration = metric.NewHistogramVec(&metric.HistogramVecOpts{

@@ -73,7 +73,7 @@ func TestClient1(t *testing.T) {
 				b := time.Now()
 				bs, err = client.Raw(context.Background(), req)
 				cost := time.Since(b)
-				fmt.Println("cost:",cost)
+				fmt.Println("cost:", cost)
 			}
 		}
 	}()

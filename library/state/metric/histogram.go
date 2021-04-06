@@ -38,5 +38,5 @@ func NewHistogramVec(cfg *HistogramVecOpts) HistogramVec {
 			Buckets:   cfg.Bucket,
 		}, cfg.Labels)
 	prometheus.MustRegister(vec)
-	return &promHistogramVec{histogram:vec}
+	return &promHistogramVec{histogram: vec}
 }
