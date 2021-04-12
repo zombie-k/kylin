@@ -2,7 +2,6 @@ package log
 
 import (
 	"context"
-	"fmt"
 	"github.com/zombie-k/kylin/library/log/internel/filewriter"
 	"io"
 	"path/filepath"
@@ -89,7 +88,6 @@ func (h *FileHandler) Log(ctx context.Context, lv Level, args ...D) {
 func (h *FileHandler) File(ctx context.Context, file string, args ...D) {
 	if w, ok := h.fwc[file]; ok {
 		d := DToMap(args...)
-		fmt.Println("File", file, args)
 		h.render.Render(w, d)
 	}
 }
@@ -99,7 +97,6 @@ func (h *FileHandler) Close() error {
 		h.Close()
 	}
 	for _, h := range h.fwc {
-		fmt.Println("close", h)
 		h.Close()
 	}
 	return nil
