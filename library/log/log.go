@@ -33,6 +33,18 @@ func Error(format string, args ...interface{}) {
 	logH.Log(context.Background(), _errorLevel, KVString(_log, fmt.Sprintf(format, args...)))
 }
 
+func Infov(ctx context.Context, args ...D) {
+	logH.Log(ctx, _infoLevel, args...)
+}
+
+func Warnv(ctx context.Context, args ...D) {
+	logH.Log(ctx, _warnLevel, args...)
+}
+
+func Errorv(ctx context.Context, args ...D) {
+	logH.Log(ctx, _errorLevel, args...)
+}
+
 func SetFormat(format string) {
 	logH.SetFormat(format)
 }

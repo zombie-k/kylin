@@ -21,7 +21,6 @@ func TestNewFileLogWriter(t *testing.T) {
 
 	for i := 0; i < 1000; i++ {
 		_, err = flw.Write([]byte("Hello World!\n"))
-		time.Sleep(time.Second)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -149,8 +149,8 @@ func (w *LogFileWriter) Write(b []byte) (int, error) {
 func (w *LogFileWriter) Close() error {
 	atomic.StoreInt32(&w.closed, 1)
 	close(w.ch)
-	w.fileHandler.Close()
 	w.wg.Wait()
+	w.fileHandler.Close()
 	return nil
 }
 
