@@ -20,13 +20,13 @@ func TestStat(t *testing.T) {
 			*i.Name == "go_gc_duration_seconds" ||
 			*i.Name == "go_goroutines" ||
 			*i.Name == "go_info" ||
-			*i.Name == "go_threads"{
+			*i.Name == "go_threads" {
 			continue
 		}
 		/*
-		if *i.Type != io_prometheus_client.MetricType_COUNTER {
-			continue
-		}
+			if *i.Type != io_prometheus_client.MetricType_COUNTER {
+				continue
+			}
 		*/
 		t.Logf("%s", i)
 

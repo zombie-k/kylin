@@ -6,6 +6,7 @@ import (
 
 var (
 	logH Handler
+	fH   FHandler
 )
 
 func init() {
@@ -46,4 +47,25 @@ func Init(conf *Config) {
 	if len(hs) > 0 {
 		logH = newHandlers([]string{}, hs...)
 	}
+}
+
+func Init2(conf *Config) {
+	if conf == nil {
+		return
+	}
+	if conf.Pattern == "" {
+		conf.Pattern = "%M"
+	}
+	var options []filewriter.Option
+	options = append(options, filewriter.SetRotate(conf.Rotate))
+	if conf.RotateFormat == "hourly" {
+		options = append(options, filewriter.SetRotateHourly(true))
+	} else if conf.RotateFormat == "daily" {
+		options = append(options, filewriter.SetRotateDaily(true))
+	}
+	if conf.Suffix == "" {
+		conf.Suffix = ".log"
+	}
+	cf := NewCustomFile(conf.Dir, conf.CustomFiles, conf.Suffix, conf.Pattern, options...)
+	fH = newFHandlers(cf)
 }

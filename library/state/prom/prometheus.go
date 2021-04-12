@@ -5,22 +5,22 @@ import "github.com/prometheus/client_golang/prometheus"
 var (
 	// LibClient for redis and db client
 	LibClient = New().Namespace("go").Subsystem("lib_client").
-		WithTimer("timer", []string{"method"}, nil).
 		//WithSummary("summary", []string{"method"}).
+		WithTimer("timer", []string{"method"}, nil).
 		WithState("state", []string{"method", "name"}).
 		WithCounter("code", []string{"method", "code"})
 
 	//RPCClient rpc client
 	RPCClient = New().Namespace("go").Subsystem("rpc_client").
-		WithTimer("timer", []string{"method"}, nil).
 		//WithSummary("summary", []string{"method"}).
+		WithTimer("timer", []string{"method"}, nil).
 		WithState("state", []string{"method", "name"}).
 		WithCounter("code", []string{"method", "code"})
 
 	//HTTPClient rpc client
 	HTTPClient = New().Namespace("go").Subsystem("http_client").
-		WithTimer("timer", []string{"method"}, nil).
 		//WithSummary("summary", []string{"method"}).
+		WithTimer("timer", []string{"method"}, nil).
 		WithState("state", []string{"method", "name"}).
 		WithCounter("code", []string{"method", "code"})
 )

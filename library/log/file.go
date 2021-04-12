@@ -2,6 +2,7 @@ package log
 
 import (
 	"context"
+	"fmt"
 	"github.com/zombie-k/kylin/library/log/internel/filewriter"
 	"io"
 	"path/filepath"
@@ -23,6 +24,9 @@ var _logFileNames = map[int]string{
 type FileHandler struct {
 	render Render
 	fws    []*filewriter.LogFileWriter
+
+	// For CustomFile
+	fwc map[string]*filewriter.LogFileWriter
 }
 
 func NewFile(dir string, pattern string, options ...filewriter.Option) *FileHandler {
@@ -46,6 +50,27 @@ func NewFile(dir string, pattern string, options ...filewriter.Option) *FileHand
 	return handler
 }
 
+func NewCustomFile(dir string, customFiles []string, suffix, pattern string, options ...filewriter.Option) *FileHandler {
+	newWriter := func(name string) *filewriter.LogFileWriter {
+		w, err := filewriter.NewLogFileWriter(filepath.Join(dir, name), options...)
+		if err != nil {
+			panic(err)
+		}
+		return w
+	}
+
+	handler := &FileHandler{
+		fwc:    make(map[string]*filewriter.LogFileWriter),
+		render: newPatternRender(pattern),
+	}
+
+	for _, name := range customFiles {
+		handler.fwc[name] = newWriter(name + suffix)
+	}
+
+	return handler
+}
+
 func (h *FileHandler) Log(ctx context.Context, lv Level, args ...D) {
 	d := DToMap(args...)
 	var w io.Writer
@@ -61,8 +86,20 @@ func (h *FileHandler) Log(ctx context.Context, lv Level, args ...D) {
 	h.render.Render(w, d)
 }
 
+func (h *FileHandler) File(ctx context.Context, file string, args ...D) {
+	if w, ok := h.fwc[file]; ok {
+		d := DToMap(args...)
+		fmt.Println("File", file, args)
+		h.render.Render(w, d)
+	}
+}
+
 func (h *FileHandler) Close() error {
 	for _, h := range h.fws {
+		h.Close()
+	}
+	for _, h := range h.fwc {
+		fmt.Println("close", h)
 		h.Close()
 	}
 	return nil

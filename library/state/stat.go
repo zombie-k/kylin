@@ -10,6 +10,6 @@ type Stat interface {
 
 var (
 	HTTPClient Stat = prom.HTTPClient
-	Cache Stat = prom.LibClient
-	RPCClient = prom.RPCClient
+	Cache      Stat = prom.LibClient
+	RPCClient       = prom.RPCClient
 )

@@ -54,3 +54,35 @@ func (hs Handlers) SetFormat(format string) {
 		h.SetFormat(format)
 	}
 }
+
+// FHandler CustomFile Handler interface.
+type FHandler interface {
+	File(context.Context, string, ...D)
+
+	SetFormat(string)
+
+	Close() error
+}
+
+type FHandlers struct {
+	handler FHandler
+}
+
+func newFHandlers(handler FHandler) *FHandlers {
+	return &FHandlers{handler: handler}
+}
+
+func (hs FHandlers) File(ctx context.Context, file string, d ...D) {
+	hs.handler.File(ctx, file, d...)
+}
+
+func (hs FHandlers) Close() (err error) {
+	if e := hs.handler.Close(); e != nil {
+		err = errors.WithStack(e)
+	}
+	return
+}
+
+func (hs FHandlers) SetFormat(format string) {
+	hs.handler.SetFormat(format)
+}

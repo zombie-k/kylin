@@ -14,6 +14,10 @@ type Config struct {
 	RotateFormat string
 
 	Pattern string
+
+	//
+	CustomFiles []string
+	Suffix      string
 }
 
 type Render interface {
@@ -45,11 +49,19 @@ func Errorv(ctx context.Context, args ...D) {
 	logH.Log(ctx, _errorLevel, args...)
 }
 
+func File(file string, format string, args ...interface{}) {
+	if fH == nil {
+		return
+	}
+	fH.File(context.Background(), file, KVString(_log, fmt.Sprintf(format, args...)))
+}
+
 func SetFormat(format string) {
 	logH.SetFormat(format)
 }
 
 func Close() error {
 	err := logH.Close()
+	err = fH.Close()
 	return err
 }

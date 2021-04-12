@@ -7,7 +7,7 @@ import (
 )
 
 func initStdout() {
-	conf := &Config{Stdout:true}
+	conf := &Config{Stdout: true}
 	Init(conf)
 }
 
@@ -55,5 +55,20 @@ func testLog(t *testing.T) {
 func TestFile(t *testing.T) {
 	initFile()
 	testLog(t)
-	time.Sleep(time.Second*1)
+	time.Sleep(time.Second * 1)
+}
+
+func TestCustomFile(t *testing.T) {
+	conf := &Config{
+		Dir:          "./log",
+		Rotate:       true,
+		RotateFormat: "daily",
+		Pattern:      "",
+		CustomFiles:  []string{"uve", "videorecom"},
+	}
+	Init2(conf)
+	File("uve", "F:%s %d", "hello", 2)
+	File("uve", "F:%s %d", "hello", 1)
+	File("videorecom", "V:%s %d", "hello", 1)
+	Close()
 }
