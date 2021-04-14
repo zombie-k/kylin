@@ -17,7 +17,7 @@ func initFile() {
 		Stdout:       true,
 		Rotate:       false,
 		RotateFormat: "daily",
-		Pattern:      "%T\t%L\t%M",
+		Pattern:      "%D\t%L\t%M",
 	}
 	Init(conf)
 }
@@ -49,6 +49,10 @@ func testLog(t *testing.T) {
 	t.Run("Info", func(t *testing.T) {
 		Info("hello %s", "world")
 		Infov(context.Background(), KV("key", 222), KV("key2", "test"))
+	})
+	t.Run("Access", func(t *testing.T) {
+		Access("hello %s", "world")
+		Accessv(context.Background(), KV("key", 222), KV("key2", "test"))
 	})
 }
 

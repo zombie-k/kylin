@@ -9,11 +9,11 @@ import (
 )
 
 var patternMap = map[string]func(map[string]interface{}) string{
-	"T":  longTime,
-	"%t": shortTime,
-	"%D": longDate,
-	"%d": shortDate,
-	//"%s": shortSource,
+	"T": longTime,
+	"t": shortTime,
+	"D": longDate,
+	"d": shortDate,
+	//"s": shortSource,
 	"L": keyFactory(_level),
 	"f": keyFactory(_source),
 	"M": message,

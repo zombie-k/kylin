@@ -11,13 +11,15 @@ const (
 	_idxInfo = iota
 	_idxWarn
 	_idxError
+	_idxAccess
 	_idxMax
 )
 
 var _logFileNames = map[int]string{
-	_idxInfo:  "info.log",
-	_idxWarn:  "warn.log",
-	_idxError: "error.log",
+	_idxInfo:   "info.log",
+	_idxWarn:   "warn.log",
+	_idxError:  "error.log",
+	_idxAccess: "access.log",
 }
 
 type FileHandler struct {
@@ -38,7 +40,7 @@ func NewFile(dir string, pattern string, options ...filewriter.Option) *FileHand
 	}
 
 	handler := &FileHandler{
-		fws:    make([]*filewriter.LogFileWriter, 3, 100),
+		fws:    make([]*filewriter.LogFileWriter, 4),
 		render: newPatternRender(pattern),
 	}
 
@@ -78,6 +80,8 @@ func (h *FileHandler) Log(ctx context.Context, lv Level, args ...D) {
 		w = h.fws[_idxWarn]
 	case _errorLevel:
 		w = h.fws[_idxError]
+	case _accessLevel:
+		w = h.fws[_idxAccess]
 	default:
 		w = h.fws[_idxInfo]
 	}

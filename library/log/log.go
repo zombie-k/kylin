@@ -37,6 +37,10 @@ func Error(format string, args ...interface{}) {
 	logH.Log(context.Background(), _errorLevel, KVString(_log, fmt.Sprintf(format, args...)))
 }
 
+func Access(format string, args ...interface{}) {
+	logH.Log(context.Background(), _accessLevel, KVString(_log, fmt.Sprintf(format, args...)))
+}
+
 func Infov(ctx context.Context, args ...D) {
 	logH.Log(ctx, _infoLevel, args...)
 }
@@ -47,6 +51,10 @@ func Warnv(ctx context.Context, args ...D) {
 
 func Errorv(ctx context.Context, args ...D) {
 	logH.Log(ctx, _errorLevel, args...)
+}
+
+func Accessv(ctx context.Context, args ...D) {
+	logH.Log(ctx, _accessLevel, args...)
 }
 
 func File(file string, format string, args ...interface{}) {
