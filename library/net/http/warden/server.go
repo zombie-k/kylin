@@ -164,6 +164,12 @@ func NewServer(conf *ServerConfig) *Engine {
 	return engine
 }
 
+func DefaultServer(conf *ServerConfig) *Engine {
+	engine := NewServer(conf)
+	engine.Use(Recovery(), Logger())
+	return engine
+}
+
 func (engine *Engine) Start() error {
 	conf := engine.conf
 	l, err := net.Listen(conf.Network, conf.Addr)

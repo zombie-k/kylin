@@ -210,7 +210,7 @@ func (c *Context) mustBindWith(obj interface{}, b binding.Binding) (err error) {
 	if err = b.Bind(c.Request, obj); err != nil {
 		c.Error = err
 		c.Render(http.StatusOK, render.JSON{
-			Code:    500,
+			Code:    http.StatusBadRequest,
 			Message: err.Error(),
 			Data:    nil,
 		})
