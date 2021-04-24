@@ -120,10 +120,10 @@ func (p *Prom) Timing(name string, time int64, extra ...string) {
 func (p *Prom) Incr(name string, extra ...string) {
 	label := append([]string{name}, extra...)
 	if p.counter != nil {
-		p.counter.WithLabelValues(label...).Inc()
+		p.counter.WithLabelValues(label...).Incr()
 	}
 	if p.state != nil {
-		p.state.WithLabelValues(label...).Inc()
+		p.state.WithLabelValues(label...).Incr()
 	}
 }
 

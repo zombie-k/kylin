@@ -2,7 +2,7 @@ package breaker
 
 import (
 	"errors"
-	"github.com/zombie-k/kylin/library/state/metric"
+	"github.com/zombie-k/kylin/library/stat/metric"
 	"math"
 	"math/rand"
 	"sync"

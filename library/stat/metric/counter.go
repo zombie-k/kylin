@@ -49,7 +49,7 @@ type prometheusCounterVec struct {
 }
 
 func (p *prometheusCounterVec) Incr(labels ...string) {
-	p.Counter.WithLabelValues(labels...).Inc()
+	p.Counter.WithLabelValues(labels...).Incr()
 }
 
 func (p *prometheusCounterVec) Add(val float64, labels ...string) {
@@ -64,7 +64,7 @@ func NewCounterVec(cfg *CounterVecOpts) CounterVec {
 	vec := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Namespace: cfg.Namespace,
-			Subsystem: cfg.SubSystem,
+			Subsystem: cfg.Subsystem,
 			Name:      cfg.Name,
 			Help:      cfg.Help,
 		},

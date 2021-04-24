@@ -1,6 +1,6 @@
-package state
+package stat
 
-import "github.com/zombie-k/kylin/library/state/prom"
+import "github.com/zombie-k/kylin/library/stat/prom"
 
 type Stat interface {
 	Timing(name string, time int64, extra ...string)

@@ -8,7 +8,7 @@ type HistogramVecOpts struct {
 	Name      string
 	Help      string
 	Labels    []string
-	Bucket    []float64
+	Buckets   []float64
 }
 
 // HistogramVec gauge vec.
@@ -35,7 +35,7 @@ func NewHistogramVec(cfg *HistogramVecOpts) HistogramVec {
 			Subsystem: cfg.Subsystem,
 			Name:      cfg.Name,
 			Help:      cfg.Help,
-			Buckets:   cfg.Bucket,
+			Buckets:   cfg.Buckets,
 		}, cfg.Labels)
 	prometheus.MustRegister(vec)
 	return &promHistogramVec{histogram: vec}

@@ -34,7 +34,7 @@ type Aggregation interface {
 // VectorOpts contains the common arguments for creating vec Metric.
 type VectorOpts struct {
 	Namespace string
-	SubSystem string
+	Subsystem string
 	Name      string
 	Help      string
 	Labels    []string
@@ -53,7 +53,7 @@ func NewBusinessMetricCount(name string, labels ...string) CounterVec {
 	}
 	return NewCounterVec(&CounterVecOpts{
 		Namespace: _businessNamespace,
-		SubSystem: _businessSubSystemCount,
+		Subsystem: _businessSubSystemCount,
 		Name:      name,
 		Labels:    labels,
 		Help:      fmt.Sprintf("Business metric count %s", name),

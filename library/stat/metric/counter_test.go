@@ -24,7 +24,7 @@ func TestCounter(t *testing.T) {
 func TestCounterVec(t *testing.T) {
 	counterVec := NewCounterVec(&CounterVecOpts{
 		Namespace: "TestNamespace",
-		SubSystem: "TestSubsystem",
+		Subsystem: "TestSubsystem",
 		Name:      "TestName",
 		Help:      "this is test metrics.",
 		Labels:    []string{"name", "addr"},
@@ -42,7 +42,7 @@ func TestCounterVec(t *testing.T) {
 	assert.Panics(t, func() {
 		NewCounterVec(&CounterVecOpts{
 			Namespace: "TestNamespace",
-			SubSystem: "TestSubsystem",
+			Subsystem: "TestSubsystem",
 			Name:      "TestName",
 			Help:      "this is test metrics.",
 			Labels:    []string{"name", "addr"},
@@ -54,7 +54,7 @@ func TestCounterVec(t *testing.T) {
 func TestPrometheus(t *testing.T) {
 	v := NewCounterVec(&CounterVecOpts{
 		Namespace: "TestNamespace",
-		SubSystem: "TestSubsystem",
+		Subsystem: "TestSubsystem",
 		Name:      "TestName",
 		Help:      "this is test metrics.",
 		Labels:    []string{"name", "addr"},
@@ -65,7 +65,7 @@ func TestPrometheus(t *testing.T) {
 
 	v1 := NewCounterVec(&CounterVecOpts{
 		Namespace: "VideoRecommend",
-		SubSystem: "827",
+		Subsystem: "827",
 		Name:      "Test",
 		Help:      "this is test metrics.",
 		Labels:    []string{"name", "addr"},

@@ -2,7 +2,7 @@ package breaker
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/zombie-k/kylin/library/state/metric"
+	"github.com/zombie-k/kylin/library/stat/metric"
 	xtime "github.com/zombie-k/kylin/library/time"
 	"math"
 	"math/rand"

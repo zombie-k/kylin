@@ -1,4 +1,4 @@
-package state
+package stat
 
 import (
 	"github.com/prometheus/client_golang/prometheus"

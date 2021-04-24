@@ -2,7 +2,7 @@ package warden
 
 import (
 	"fmt"
-	"github.com/zombie-k/kylin/library/state/metric"
+	"github.com/zombie-k/kylin/library/stat/metric"
 	xtime "github.com/zombie-k/kylin/library/time"
 	"net/http"
 	"strings"
@@ -18,7 +18,7 @@ type TypeName []struct {
 var (
 	_metricClientReqCodeTotal = metric.NewCounterVec(&metric.CounterVecOpts{
 		Namespace: "demo_api",
-		SubSystem: "count",
+		Subsystem: "count",
 		Name:      "test",
 		Help:      "http client requests code count.",
 		Labels:    []string{"path", "method", "code"},
