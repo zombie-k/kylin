@@ -14,7 +14,7 @@ const (
 	// A database statement for the given database type.
 	// eg. for db.type="sql", "select * from user_table"; fro db.type="redis", "set key 'value'".
 	// type string
-	TagDbStatement = "db.statement"
+	TagDBStatement = "db.statement"
 
 	// type bool
 	TagError = "error"
@@ -83,6 +83,10 @@ func TagFloat64(key string, val float64) Tag {
 
 func TagFloat32(key string, val float64) Tag {
 	return Tag{Key: key, Value: val}
+}
+
+func String(key string, val string) Tag {
+	return TagString(key, val)
 }
 
 type LogField struct {
