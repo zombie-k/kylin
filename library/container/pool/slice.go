@@ -207,8 +207,8 @@ func (p *Slice) putItemLocked(c io.Closer) bool {
 		return false
 	}
 	i := item{
-		createAt: nowFunc(),
-		c:        c,
+		createdAt: nowFunc(),
+		c:         c,
 	}
 	if l := len(p.itemRequests); l > 0 {
 		var req chan item
@@ -265,7 +265,7 @@ func (p *Slice) staleCleaner(d time.Duration) {
 		var closing []*item
 		for i := 0; i < len(p.freeItem); i++ {
 			c := p.freeItem[i]
-			if c.createAt.Before(expiredSince) {
+			if c.createdAt.Before(expiredSince) {
 				closing = append(closing, c)
 				p.active--
 				last := len(p.freeItem) - 1

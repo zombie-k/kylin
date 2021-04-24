@@ -46,15 +46,15 @@ type Config struct {
 }
 
 type item struct {
-	createAt time.Time
-	c        io.Closer
+	createdAt time.Time
+	c         io.Closer
 }
 
 func (i *item) expired(timeout time.Duration) bool {
 	if timeout < 0 {
 		return false
 	}
-	return i.createAt.Add(timeout).Before(nowFunc())
+	return i.createdAt.Add(timeout).Before(nowFunc())
 }
 
 func (i *item) close() error {
