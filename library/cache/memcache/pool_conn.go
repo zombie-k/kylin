@@ -163,7 +163,7 @@ func (pc *poolConn) GetMultiContext(ctx context.Context, keys []string) (map[str
 	}
 	now := time.Now()
 	items, err := pc.c.GetMulti(keys)
-	pc.pstat("gets", now, err)
+	pc.pstat(keyWordGet, now, err)
 	return items, err
 }
 

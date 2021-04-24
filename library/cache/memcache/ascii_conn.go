@@ -29,6 +29,10 @@ var (
 	replyServerErrorPrefix = []byte("SERVER_ERROR ")
 )
 
+var (
+	keyWordGet = "get"
+)
+
 var _ protocolConn = &asiiConn{}
 
 // asiiConn is the low-level implementation of Conn
@@ -128,7 +132,7 @@ func (c *asiiConn) Err() error {
 
 func (c *asiiConn) Get(ctx context.Context, key string) (result *Item, err error) {
 	c.conn.SetWriteDeadline(shrinkDeadline(ctx, c.writeTimeout))
-	if _, err = fmt.Fprintf(c.rw, "gets %s\r\n", key); err != nil {
+	if _, err = fmt.Fprintf(c.rw, "%s %s\r\n", keyWordGet, key); err != nil {
 		return nil, c.fatal(err)
 	}
 	if err = c.rw.Flush(); err != nil {
@@ -148,7 +152,7 @@ func (c *asiiConn) Get(ctx context.Context, key string) (result *Item, err error
 func (c *asiiConn) GetMulti(ctx context.Context, keys ...string) (map[string]*Item, error) {
 	var err error
 	c.conn.SetWriteDeadline(shrinkDeadline(ctx, c.writeTimeout))
-	if _, err = fmt.Fprintf(c.rw, "gets %s\r\n", strings.Join(keys, " ")); err != nil {
+	if _, err = fmt.Fprintf(c.rw, "%s %s\r\n", keyWordGet, strings.Join(keys, " ")); err != nil {
 		return nil, c.fatal(err)
 	}
 	if err = c.rw.Flush(); err != nil {
