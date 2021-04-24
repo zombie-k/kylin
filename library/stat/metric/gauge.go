@@ -47,9 +47,9 @@ type GaugeVecOpts VectorOpts
 type GaugeVec interface {
 	// Set sets the Gauge to an arbitrary value.
 	Set(v float64, labels ...string)
-	// Incr increments the Gauge by 1. Use Add to increment it by arbitrary
+	// Inc increments the Gauge by 1. Use Add to increment it by arbitrary
 	// values.
-	Incr(labels ...string)
+	Inc(labels ...string)
 	// Add adds the given value to the Gauge. (The value can be negative,
 	// resulting in a decrease of the Gauge.)
 	Add(v float64, labels ...string)
@@ -78,12 +78,12 @@ func NewGaugeVec(cfg *GaugeVecOpts) GaugeVec {
 	}
 }
 
-// Incr Incr increments the counter by 1. Use Add to increment it by arbitrary.
-func (gauge *promGaugeVec) Incr(labels ...string) {
-	gauge.gauge.WithLabelValues(labels...).Incr()
+// Inc Inc increments the counter by 1. Use Add to increment it by arbitrary.
+func (gauge *promGaugeVec) Inc(labels ...string) {
+	gauge.gauge.WithLabelValues(labels...).Inc()
 }
 
-// Add Incr increments the counter by 1. Use Add to increment it by arbitrary.
+// Add Inc increments the counter by 1. Use Add to increment it by arbitrary.
 func (gauge *promGaugeVec) Add(v float64, labels ...string) {
 	gauge.gauge.WithLabelValues(labels...).Add(v)
 }

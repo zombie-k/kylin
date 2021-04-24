@@ -169,7 +169,7 @@ func (client *Client) Raw(c context.Context, req *xhttp.Request, v ...string) (b
 	brk := client.breaker.Get(uri)
 	if err = brk.Allow(); err != nil {
 		code = "breaker"
-		_metricClientRequestCodeTotal.Incr(uri, req.Method, code)
+		_metricClientRequestCodeTotal.Inc(uri, req.Method, code)
 		return
 	}
 	defer client.alterBreaker(brk, &err)
@@ -179,7 +179,7 @@ func (client *Client) Raw(c context.Context, req *xhttp.Request, v ...string) (b
 		//_metricClientRequestDuration.Observe(int64(time.Since(now)/time.Millisecond), uri, req.Method)
 		_metricClientRequestQuantile.Observe(int64(time.Since(now)/time.Millisecond), uri, req.Method)
 		if code != "" {
-			_metricClientRequestCodeTotal.Incr(uri, req.Method, code)
+			_metricClientRequestCodeTotal.Inc(uri, req.Method, code)
 		}
 	}()
 

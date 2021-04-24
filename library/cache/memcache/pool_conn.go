@@ -63,11 +63,11 @@ func (pc *poolConn) pstat(key string, t time.Time, err error) {
 	_metricReqDur.Observe(int64(time.Since(t)/time.Millisecond), pc.p.c.Name, pc.p.c.Addr, key)
 	if err != nil {
 		if msg := pc.formatErr(err); msg != "" {
-			_metricReqErr.Incr(pc.p.c.Name, pc.p.c.Addr, key, msg)
+			_metricReqErr.Inc(pc.p.c.Name, pc.p.c.Addr, key, msg)
 		}
 		return
 	}
-	_metricHits.Incr(pc.p.c.Name, pc.p.c.Addr)
+	_metricHits.Inc(pc.p.c.Name, pc.p.c.Addr)
 }
 
 func (pc *poolConn) Close() error {

@@ -54,7 +54,7 @@ func (pc *poolConn) formatErr(err error) string {
 	switch e {
 	case ErrNotFound, ErrExists, ErrNotStored, nil:
 		if e == ErrNotFound {
-			_metricMisses.Incr(pc.p.c.Name, pc.p.c.Addr)
+			_metricMisses.Inc(pc.p.c.Name, pc.p.c.Addr)
 		}
 		return ""
 	default:

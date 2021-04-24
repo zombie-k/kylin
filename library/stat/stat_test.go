@@ -8,8 +8,8 @@ import (
 )
 
 func TestStat(t *testing.T) {
-	HTTPClient.Incr("/root/metrics", "200")
-	HTTPClient.Incr("/root/metrics", "200")
+	HTTPClient.Inc("/root/metrics", "200")
+	HTTPClient.Inc("/root/metrics", "200")
 	HTTPClient.Timing("/root/metrics", 55)
 	time.Sleep(time.Millisecond * 20)
 	HTTPClient.Timing("/root/metrics", 60)

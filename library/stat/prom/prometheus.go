@@ -117,13 +117,13 @@ func (p *Prom) Timing(name string, time int64, extra ...string) {
 	}
 }
 
-func (p *Prom) Incr(name string, extra ...string) {
+func (p *Prom) Inc(name string, extra ...string) {
 	label := append([]string{name}, extra...)
 	if p.counter != nil {
-		p.counter.WithLabelValues(label...).Incr()
+		p.counter.WithLabelValues(label...).Inc()
 	}
 	if p.state != nil {
-		p.state.WithLabelValues(label...).Incr()
+		p.state.WithLabelValues(label...).Inc()
 	}
 }
 

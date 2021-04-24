@@ -30,7 +30,7 @@ func goIncr() {
 	for {
 		select {
 		case <-ticker.C:
-			_metricClientReqCodeTotal.Incr("http://localhost:19960/test", "GET", "200")
+			_metricClientReqCodeTotal.Inc("http://localhost:19960/test", "GET", "200")
 		}
 	}
 }

@@ -29,9 +29,9 @@ func TestCounterVec(t *testing.T) {
 		Help:      "this is test metrics.",
 		Labels:    []string{"name", "addr"},
 	})
-	counterVec.Incr("name1", "127.0.0.1")
-	counterVec.Incr("name1", "127.0.0.1")
-	counterVec.Incr("name1", "127.0.0.1")
+	counterVec.Inc("name1", "127.0.0.1")
+	counterVec.Inc("name1", "127.0.0.1")
+	counterVec.Inc("name1", "127.0.0.1")
 	//c := counterVec.(*prometheusCounterVec)
 	//ss , err := c.Counter.GetMetricWithLabelValues("name1", "127.0.0.1")
 	//fmt.Printf("%s,%s\n", ss, err)
@@ -59,9 +59,9 @@ func TestPrometheus(t *testing.T) {
 		Help:      "this is test metrics.",
 		Labels:    []string{"name", "addr"},
 	})
-	v.Incr("name1", "127.0.0.1")
-	v.Incr("name2", "127.0.0.1")
-	v.Incr("name3", "127.0.0.1")
+	v.Inc("name1", "127.0.0.1")
+	v.Inc("name2", "127.0.0.1")
+	v.Inc("name3", "127.0.0.1")
 
 	v1 := NewCounterVec(&CounterVecOpts{
 		Namespace: "VideoRecommend",
@@ -70,11 +70,11 @@ func TestPrometheus(t *testing.T) {
 		Help:      "this is test metrics.",
 		Labels:    []string{"name", "addr"},
 	})
-	v1.Incr("name2", "127.0.0.1")
-	v1.Incr("name3", "127.0.0.1")
-	v1.Incr("name1", "127.0.0.1")
-	v1.Incr("name1", "127.0.0.1")
-	v1.Incr("name4", "127.0.0.1")
+	v1.Inc("name2", "127.0.0.1")
+	v1.Inc("name3", "127.0.0.1")
+	v1.Inc("name1", "127.0.0.1")
+	v1.Inc("name1", "127.0.0.1")
+	v1.Inc("name4", "127.0.0.1")
 
 	reg := prometheus.NewPedanticRegistry()
 	reg.Register(v1.(*prometheusCounterVec).Counter)

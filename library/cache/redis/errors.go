@@ -11,7 +11,7 @@ func formatErr(err error, name, addr string) string {
 	switch e {
 	case ErrNil, nil:
 		if e == ErrNil {
-			_metricMisses.Incr(name, addr)
+			_metricMisses.Inc(name, addr)
 		}
 		return ""
 	default:

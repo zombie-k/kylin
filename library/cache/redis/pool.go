@@ -135,11 +135,11 @@ func pstat(name, addr, cmd string, t time.Time, err error) func() {
 		_metricReqDur.Observe(int64(time.Since(t)/time.Millisecond), name, addr, cmd)
 		if err != nil {
 			if msg := formatErr(err, name, addr); msg != "" {
-				_metricReqErr.Incr(name, addr, cmd, msg)
+				_metricReqErr.Inc(name, addr, cmd, msg)
 			}
 			return
 		}
-		_metricHits.Incr(name, addr)
+		_metricHits.Inc(name, addr)
 	}
 }
 

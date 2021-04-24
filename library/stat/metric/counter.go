@@ -38,8 +38,8 @@ type CounterVecOpts VectorOpts
 
 // CounterVec counter vec.
 type CounterVec interface {
-	// Incr increments the counter by 1. Use Add to increment it by arbitrary non-negative values.
-	Incr(...string)
+	// Inc increments the counter by 1. Use Add to increment it by arbitrary non-negative values.
+	Inc(...string)
 	// Add adds the given value to the counter. It panics if the value is < 0.
 	Add(float64, ...string)
 }
@@ -48,8 +48,8 @@ type prometheusCounterVec struct {
 	Counter *prometheus.CounterVec
 }
 
-func (p *prometheusCounterVec) Incr(labels ...string) {
-	p.Counter.WithLabelValues(labels...).Incr()
+func (p *prometheusCounterVec) Inc(labels ...string) {
+	p.Counter.WithLabelValues(labels...).Inc()
 }
 
 func (p *prometheusCounterVec) Add(val float64, labels ...string) {
