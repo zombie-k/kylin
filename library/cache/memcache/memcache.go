@@ -19,6 +19,9 @@ const (
 	// FlagProtobuf protobuf
 	FlagProtobuf = uint32(1) << 2
 
+	// FlagZlib zlib compress.
+	FlagZlib = uint32(1) << 3
+
 	_flagEncoding = uint32(0xFFFF8000)
 
 	// FlagGzip gzip compress.

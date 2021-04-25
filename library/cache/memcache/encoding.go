@@ -3,6 +3,7 @@ package memcache
 import (
 	"bytes"
 	"compress/gzip"
+	"compress/zlib"
 	"encoding/gob"
 	"encoding/json"
 	"io"
@@ -27,6 +28,8 @@ type encodeDecode struct {
 	gr gzip.Reader
 	gw *gzip.Writer
 	cb bytes.Buffer
+	// zlib
+	zw *zlib.Writer
 	// Encoding
 	edb bytes.Buffer
 	// json
@@ -42,6 +45,7 @@ func newEncodeDecoder() *encodeDecode {
 	ed.jd = json.NewDecoder(&ed.jr)
 	ed.je = json.NewEncoder(&ed.edb)
 	ed.gw = gzip.NewWriter(&ed.cb)
+	ed.zw = zlib.NewWriter(&ed.cb)
 	ed.edb.Grow(_encodeBuf)
 	// NOTE reuse bytes.Buffer internal buf
 	// DON'T concurrency call Scan
@@ -97,6 +101,16 @@ func (ed *encodeDecode) encode(item *Item) (data []byte, err error) {
 			return
 		}
 		data = ed.cb.Bytes()
+	} else if item.Flags&FlagZlib == FlagZlib {
+		ed.cb.Reset()
+		ed.zw.Reset(&ed.cb)
+		if _, err = ed.zw.Write(data); err != nil {
+			return
+		}
+		if err = ed.zw.Close(); err != nil {
+			return
+		}
+		data = ed.cb.Bytes()
 	}
 	if len(data) > 8000000 {
 		err = ErrValueSize
@@ -121,6 +135,11 @@ func (ed *encodeDecode) decode(item *Item, v interface{}) (err error) {
 				err = e
 			}
 		}()
+	} else if item.Flags&FlagZlib == FlagZlib {
+		rd = &ed.cb
+		zr, _ := zlib.NewReader(&ed.ir)
+		defer zr.Close()
+		io.Copy(&ed.cb, zr)
 	}
 	switch {
 	case item.Flags&FlagGOB == FlagGOB:
@@ -130,7 +149,13 @@ func (ed *encodeDecode) decode(item *Item, v interface{}) (err error) {
 		err = ed.jd.Decode(v)
 	default:
 		data = item.Value
-		if item.Flags&FlagGzip == FlagGzip {
+		if item.Flags&FlagZlib == FlagZlib {
+			ed.edb.Reset()
+			if _, err = io.Copy(&ed.edb, rd); err != nil {
+				return
+			}
+			data = ed.edb.Bytes()
+		} else if item.Flags&FlagGzip == FlagGzip {
 			ed.edb.Reset()
 			if _, err = io.Copy(&ed.edb, rd); err != nil {
 				return
