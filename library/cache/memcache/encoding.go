@@ -136,10 +136,14 @@ func (ed *encodeDecode) decode(item *Item, v interface{}) (err error) {
 			}
 		}()
 	} else if item.Flags&FlagZlib == FlagZlib {
-		rd = &ed.cb
-		zr, _ := zlib.NewReader(&ed.ir)
-		defer zr.Close()
-		io.Copy(&ed.cb, zr)
+		zr, err := zlib.NewReader(&ed.ir)
+		if err == nil {
+			rd = &ed.cb
+			zr.Close()
+			io.Copy(&ed.cb, zr)
+		} else {
+			ed.ir.Reset(item.Value)
+		}
 	}
 	switch {
 	case item.Flags&FlagGOB == FlagGOB:

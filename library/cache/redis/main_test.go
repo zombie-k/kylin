@@ -1,13 +1,13 @@
 package redis
 
 import (
-	"flag"
-	"os"
+	//"flag"
+	//"os"
 	"testing"
 	"time"
 
 	"github.com/zombie-k/kylin/library/container/pool"
-	"github.com/zombie-k/kylin/library/testing/lich"
+	//"github.com/zombie-k/kylin/library/testing/lich"
 	xtime "github.com/zombie-k/kylin/library/time"
 )
 
@@ -54,6 +54,7 @@ func DialDefaultServer() (Conn, error) {
 }
 
 func TestMain(m *testing.M) {
+	/*
 	flag.Set("f", "./test/docker-compose.yaml")
 	if err := lich.Setup(); err != nil {
 		panic(err)
@@ -64,4 +65,5 @@ func TestMain(m *testing.M) {
 	setupTestPool()
 	ret := m.Run()
 	os.Exit(ret)
+	*/
 }

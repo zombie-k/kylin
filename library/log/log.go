@@ -70,6 +70,8 @@ func SetFormat(format string) {
 
 func Close() error {
 	err := logH.Close()
-	err = fH.Close()
+	if fH != nil {
+		err = fH.Close()
+	}
 	return err
 }

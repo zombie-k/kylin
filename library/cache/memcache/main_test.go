@@ -2,8 +2,6 @@ package memcache
 
 import (
 	"log"
-	"os"
-	"testing"
 	"time"
 
 	"github.com/zombie-k/kylin/library/container/pool"
@@ -67,6 +65,7 @@ func setupTestPool(addr string) {
 	testPool = NewPool(config)
 }
 
+/*
 func TestMain(m *testing.M) {
 	testMemcacheAddr = os.Getenv("TEST_MEMCACHE_ADDR")
 	if testExampleAddr == "" {
@@ -83,3 +82,4 @@ func TestMain(m *testing.M) {
 	ret := m.Run()
 	os.Exit(ret)
 }
+ */
