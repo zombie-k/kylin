@@ -22,10 +22,13 @@ var (
 	_QRedisName  string
 	_QKey        string
 	_QRedisDB    int
+	_QRand       bool
+	_QPrintKey   bool
 	redisMap     = make(map[string]*RedisMap)
 	compress     = zlib.New()
 	_zlib        bool
 	_json        bool
+	_prefix      string
 	_suffix      string
 )
 
@@ -40,6 +43,8 @@ func init() {
 	flag.StringVar(&_QRedisName, "n", "", "name of redis set in config file")
 	flag.StringVar(&_QKey, "k", "", "redis key")
 	flag.IntVar(&_QRedisDB, "d", 0, "redis db. default 0")
+	flag.BoolVar(&_QRand, "rand", false, "random key")
+	flag.BoolVar(&_QPrintKey, "pk", false, "print key")
 }
 
 func main() {
@@ -51,7 +56,7 @@ func main() {
 		fmt.Println("need redis name.")
 		return
 	}
-	if _QKey == "" {
+	if _QKey == "" && !_QRand {
 		fmt.Println("need query key.")
 		return
 	}
@@ -61,11 +66,23 @@ func main() {
 		return
 	}
 	defer conn.Close()
-	exec2(conn)
+	key := _prefix + _QKey + _suffix
+	if _QRand {
+		key = execRandomKey(conn)
+	}
+	exec2(conn, key)
 }
 
-func exec2(conn redis.Conn) {
-	val, err := redis.Bytes(conn.Do("GET", _QKey+_suffix))
+func execRandomKey(conn redis.Conn) string {
+	val, err := redis.Bytes(conn.Do("RANDOMKEY"))
+	if err != nil {
+		panic(err)
+	}
+	return string(val)
+}
+
+func exec2(conn redis.Conn, key string) {
+	val, err := redis.Bytes(conn.Do("GET", key))
 	if _zlib {
 		val, err = compress.UnCompress(val)
 		if err != nil {
@@ -78,7 +95,11 @@ func exec2(conn redis.Conn) {
 		_ = jsoniter.Unmarshal(val, &v)
 		val, _ = jsoniter.Marshal(v)
 	}
-	fmt.Println(string(val))
+	if _QPrintKey {
+		fmt.Printf("%s:%s\n", key, val)
+	} else {
+		fmt.Printf("%s\n", val)
+	}
 }
 
 func exec() {
@@ -141,6 +162,7 @@ func connTarget() (redis.Conn, error) {
 				}
 				_zlib = config.Zlib
 				_json = config.Json
+				_prefix = config.Prefix
 				_suffix = config.Suffix
 				return redis.NewConn(rdxConfig)
 			}

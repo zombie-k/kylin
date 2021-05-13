@@ -18,6 +18,7 @@ type RdConfig struct {
 	HashExpr string
 	Zlib bool
 	Json bool
+	Prefix string
 	Suffix string
 }
 
