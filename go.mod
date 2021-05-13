@@ -3,6 +3,8 @@ module github.com/zombie-k/kylin
 go 1.14
 
 require (
+	github.com/BurntSushi/toml v0.3.1
+	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.4.3
