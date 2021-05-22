@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-var defaultPattern = "%T\t%L\t%M"
+var defaultPattern = "%D\t%L\t%M"
 
 type StdoutHandler struct {
 	render Render

@@ -1,9 +1,9 @@
 package video799tab
 
 import (
-	"fmt"
+	"github.com/zombie-k/kylin/library/log"
 	"github.com/zombie-k/kylin/library/pkg/kafka"
-	"time"
+	xtime "github.com/zombie-k/kylin/library/time"
 )
 
 const Name = "video799tab"
@@ -15,6 +15,5 @@ func New() *parser {
 }
 
 func (p *parser) Messages(message *kafka.Message) {
-	fmt.Printf("%s %s %d %d %s %s\n", message.Timestamp, message.Topic, message.Partition, message.Offset, message.Key, message.Value)
-	time.Sleep(time.Second * 5)
+	log.Info("%s %s %d %d %s %s", message.Timestamp.Format(xtime.LongDateFormatter), message.Topic, message.Partition, message.Offset, message.Key, message.Value)
 }

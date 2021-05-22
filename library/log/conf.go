@@ -20,7 +20,7 @@ func Init(conf *Config) {
 			Stdout:       true,
 			Rotate:       false,
 			RotateFormat: "daily",
-			Pattern:      "%T\t%L\t%M",
+			Pattern:      "%D\t%L\t%M",
 		}
 	}
 

@@ -62,4 +62,3 @@ func (p *Pool) UnCompress(val []byte) ([]byte, error) {
 	buf, err := ioutil.ReadAll(out)
 	return buf, err
 }
-
