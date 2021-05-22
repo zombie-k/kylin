@@ -2,6 +2,7 @@ package kafka
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/zombie-k/kylin/library/log"
@@ -17,6 +18,7 @@ type Consumer struct {
 
 	client sarama.ConsumerGroup
 	handle *handle
+	parser Messager
 
 	ctx    context.Context
 	cancel func()
@@ -30,7 +32,10 @@ func (consumer *Consumer) Stop() {
 	consumer.wg.Wait()
 }
 
-func NewConsumer(c *Config) (consumer *Consumer, err error) {
+func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
+	if parser == nil {
+		return nil, errors.New("parser must not empty")
+	}
 	version, err := sarama.ParseKafkaVersion(c.Kafka.Version)
 	if err != nil {
 		return nil, err
@@ -92,6 +97,7 @@ func NewConsumer(c *Config) (consumer *Consumer, err error) {
 			logInterval: 30 * time.Second,
 			wg:          &sync.WaitGroup{},
 		},
+		parser: parser,
 		ctx:    ctx,
 		cancel: cancel,
 		wg:     &sync.WaitGroup{},
@@ -153,11 +159,13 @@ type handle struct {
 }
 
 func (h *handle) Setup(session sarama.ConsumerGroupSession) error {
+	log.Info("session Setup")
 	close(h.ready)
 	return nil
 }
 
 func (h *handle) Cleanup(session sarama.ConsumerGroupSession) error {
+	log.Info("session Cleanup")
 	return nil
 }
 
@@ -171,7 +179,7 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 			h.wg.Wait()
 			return nil
 		case <-logTick.C:
-			log.Info("topic:%s, partition:%d", claim.Topic(), claim.Partition())
+			log.Info("topic:%s, partition:%d, channel buffer size:%d", claim.Topic(), claim.Partition(), h.consumer.job.Channel())
 		case msg, ok := <-claim.Messages():
 			if !ok {
 				return nil
@@ -182,7 +190,16 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 					h.wg.Done()
 				}()
 				//TODO: interface callback
-				fmt.Printf("Message claimed: %s, timestamp:%v topic:%s, partition:%d, value:%s\n", h.name, msg.Timestamp, msg.Topic, msg.Partition, string(msg.Value))
+				//fmt.Printf("Message claimed: %s, timestamp:%v topic:%s, partition:%d, value:%s\n", h.name, msg.Timestamp, msg.Topic, msg.Partition, string(msg.Value))
+				message := &Message{
+					Key:       msg.Key,
+					Value:     msg.Value,
+					Offset:    msg.Offset,
+					Partition: msg.Partition,
+					Topic:     msg.Topic,
+					Timestamp: msg.Timestamp,
+				}
+				h.consumer.parser.Messages(message)
 			}); err != nil {
 				h.wg.Done()
 			}
