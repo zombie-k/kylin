@@ -1,18 +1,23 @@
 package main
 
 import (
+	"flag"
 	"github.com/zombie-k/kylin/app/example/kafka/conf"
+	"github.com/zombie-k/kylin/app/example/kafka/service"
 	"github.com/zombie-k/kylin/library/pkg/kafka"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-func run() {
+func main() {
+	flag.Parse()
 	if err := conf.Init(); err != nil {
 		panic(err)
 	}
-	consumer, err := kafka.NewConsumer(conf.Conf)
+
+	srv := service.New(conf.Conf)
+	consumer, err := kafka.NewConsumer(conf.Conf, srv.Parser(conf.Conf.Kafka.Name))
 	if err != nil {
 		panic(err)
 	}
@@ -31,8 +36,4 @@ func run() {
 			return
 		}
 	}
-}
-
-func main() {
-	run()
 }

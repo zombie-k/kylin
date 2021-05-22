@@ -42,9 +42,8 @@ func (c *Config) Validate() error {
 		c.Kafka.Sasl.User = ""
 		c.Kafka.Sasl.Password = ""
 	}
-	if _ , err := sarama.ParseKafkaVersion(c.Kafka.Version); err != nil {
+	if _, err := sarama.ParseKafkaVersion(c.Kafka.Version); err != nil {
 		return err
 	}
 	return nil
 }
-

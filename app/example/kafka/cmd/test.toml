@@ -1,0 +1,14 @@
+[Kafka]
+    Name = "video799tab"
+    Brokers = ["127.0.0.1:9001"]
+    Topics = ["video-799-tab"]
+    Group = "test"
+    Version = "0.10.2.1"
+    OffsetMode = "latest"
+    Rebalance = "range"
+    [Kafka.Sasl]
+        Enable = true
+        Mechanism = "PLAIN"
+        User = ""
+        Password = ""
+[Job]
