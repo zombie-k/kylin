@@ -159,7 +159,6 @@ type handle struct {
 }
 
 func (h *handle) Setup(session sarama.ConsumerGroupSession) error {
-	log.Info("session Setup")
 	close(h.ready)
 	return nil
 }
@@ -175,11 +174,11 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 	for {
 		select {
 		case <-session.Context().Done():
-			log.Info("topic:%s, partition:%d session exit, waiting and process the left", claim.Topic(), claim.Partition())
+			log.Info("topic:%s, partition:%d session exit, waiting and processing the buffers", claim.Topic(), claim.Partition())
 			h.wg.Wait()
 			return nil
 		case <-logTick.C:
-			log.Info("topic:%s, partition:%d, channel buffer size:%d", claim.Topic(), claim.Partition(), h.consumer.job.Channel())
+			log.Warn("topic:%s, partition:%d, channel buffer size:%d", claim.Topic(), claim.Partition(), h.consumer.job.Channel())
 		case msg, ok := <-claim.Messages():
 			if !ok {
 				return nil
@@ -189,8 +188,6 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 				defer func() {
 					h.wg.Done()
 				}()
-				//TODO: interface callback
-				//fmt.Printf("Message claimed: %s, timestamp:%v topic:%s, partition:%d, value:%s\n", h.name, msg.Timestamp, msg.Topic, msg.Partition, string(msg.Value))
 				message := &Message{
 					Key:       msg.Key,
 					Value:     msg.Value,
