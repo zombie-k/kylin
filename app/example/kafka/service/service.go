@@ -2,15 +2,16 @@ package service
 
 import (
 	"fmt"
+	"github.com/zombie-k/kylin/app/example/kafka/conf"
 	"github.com/zombie-k/kylin/library/pkg/kafka"
 )
 
 type Service struct {
-	c         *kafka.Config
+	c         *conf.Config
 	parserMap map[string]func() kafka.Messager
 }
 
-func New(c *kafka.Config) (s *Service) {
+func New(c *conf.Config) (s *Service) {
 	s = &Service{
 		c:         c,
 		parserMap: make(map[string]func() kafka.Messager),

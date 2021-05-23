@@ -4,12 +4,13 @@ import (
 	"errors"
 	"flag"
 	"github.com/BurntSushi/toml"
+	"github.com/zombie-k/kylin/library/log"
 	"github.com/zombie-k/kylin/library/pkg/kafka"
 )
 
 var (
 	confPath string
-	Conf     = &kafka.Config{}
+	Conf     = &Config{}
 )
 
 func init() {
@@ -17,7 +18,8 @@ func init() {
 }
 
 type Config struct {
-	kafka.Config
+	Kafka *kafka.Config
+	Log *log.Config
 }
 
 func Init() error {
@@ -27,6 +29,6 @@ func Init() error {
 	if _, err := toml.DecodeFile(confPath, &Conf); err != nil {
 		return err
 	}
-	err := Conf.Validate()
+	err := Conf.Kafka.Builder()
 	return err
 }

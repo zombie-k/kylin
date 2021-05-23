@@ -1,14 +1,18 @@
 [Kafka]
-    Name = "video799tab"
-    Brokers = ["127.0.0.1:9001"]
-    Topics = ["video-799-tab"]
-    Group = "test"
-    Version = "0.10.2.1"
-    OffsetMode = "latest"
-    Rebalance = "range"
-    [Kafka.Sasl]
-        Enable = true
-        Mechanism = "PLAIN"
-        User = ""
-        Password = ""
-[Job]
+    [Kafka.Consume]
+        #与业务解析文件内Name保持一致
+        Name = "video799tab"
+        Brokers = ["127.0.0.1:9110", "127.0.0.2:9110"]
+        Topics = ["video-799-tab"]
+        Group = "test"
+        Version = "0.10.2.1"
+        OffsetMode = "latest"
+        Rebalance = "range"
+        [Kafka.Consume.Sasl]
+            Enable = true
+            Mechanism = "PLAIN"
+            User = "test"
+            Password = "test"
+    [Kafka.Job]
+        Worker = 1
+        Buffer = 10

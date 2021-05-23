@@ -36,7 +36,7 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 	if parser == nil {
 		return nil, errors.New("parser must not empty")
 	}
-	version, err := sarama.ParseKafkaVersion(c.Kafka.Version)
+	version, err := sarama.ParseKafkaVersion(c.Consume.Version)
 	if err != nil {
 		return nil, err
 	}
@@ -44,9 +44,9 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 	config.Version = version
-	config.ClientID = fmt.Sprintf("%s-%s", c.Kafka.Name, c.Kafka.Group)
+	config.ClientID = fmt.Sprintf("%s-%s", c.Consume.Name, c.Consume.Group)
 
-	switch strings.ToLower(c.Kafka.OffsetMode) {
+	switch strings.ToLower(c.Consume.OffsetMode) {
 	case "oldest", "earliest":
 		config.Consumer.Offsets.Initial = sarama.OffsetOldest
 	case "latest", "newest":
@@ -54,7 +54,7 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 	default:
 	}
 
-	switch strings.ToLower(c.Kafka.Rebalance) {
+	switch strings.ToLower(c.Consume.Rebalance) {
 	case "range":
 		config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRange
 	case "sticky":
@@ -64,11 +64,11 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 	default:
 	}
 
-	if c.Kafka.Sasl.Enable {
+	if c.Consume.Sasl.Enable {
 		config.Net.SASL.Enable = true
-		config.Net.SASL.User = c.Kafka.Sasl.User
-		config.Net.SASL.Password = c.Kafka.Sasl.Password
-		switch strings.ToUpper(c.Kafka.Sasl.Mechanism) {
+		config.Net.SASL.User = c.Consume.Sasl.User
+		config.Net.SASL.Password = c.Consume.Sasl.Password
+		switch strings.ToUpper(c.Consume.Sasl.Mechanism) {
 		case sarama.SASLTypePlaintext:
 			config.Net.SASL.Mechanism = sarama.SASLTypePlaintext
 		case sarama.SASLExtKeyAuth:
@@ -82,7 +82,7 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		}
 	}
 
-	client, err := sarama.NewConsumerGroup(c.Kafka.Brokers, c.Kafka.Group, config)
+	client, err := sarama.NewConsumerGroup(c.Consume.Brokers, c.Consume.Group, config)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		client: client,
 		handle: &handle{
 			ready:       make(chan bool, 0),
-			name:        c.Kafka.Name,
+			name:        c.Consume.Name,
 			logInterval: 30 * time.Second,
 			wg:          &sync.WaitGroup{},
 		},
@@ -101,7 +101,7 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		ctx:    ctx,
 		cancel: cancel,
 		wg:     &sync.WaitGroup{},
-		job:    fanout.New("kafka", fanout.Worker(1), fanout.Buffer(10)),
+		job:    fanout.New("kafka", fanout.Worker(c.Job.Worker), fanout.Buffer(c.Job.Buffer)),
 	}
 
 	consumer.handle.consumer = consumer
@@ -111,12 +111,12 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		for {
 			select {
 			case <-consumer.ctx.Done():
-				log.Info("Terminating: context cancelled")
+				log.Warn("Terminating: context cancelled")
 				return
 			case err := <-consumer.client.Errors():
 				log.Error("%s", err.Error())
 			default:
-				if err := consumer.client.Consume(consumer.ctx, c.Kafka.Topics, consumer.handle); err != nil {
+				if err := consumer.client.Consume(consumer.ctx, c.Consume.Topics, consumer.handle); err != nil {
 					switch err {
 					case sarama.ErrClosedClient, sarama.ErrClosedConsumerGroup:
 						log.Error("%v", err)
@@ -128,7 +128,7 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 					}
 				}
 				if consumer.ctx.Err() != nil {
-					log.Info("Terminating:%v", ctx.Err())
+					log.Warn("Terminating:%v", ctx.Err())
 					return
 				}
 				time.Sleep(time.Second)
@@ -143,8 +143,10 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		}
 	}()
 
+	log.Warn("Topic:%s", c.Consume.Topics)
+	log.Warn("Group:%s", c.Consume.Group)
 	<-consumer.handle.ready
-	log.Info("Kylin consumer up and running!...\n")
+	log.Warn("Kylin consumer up and running!...\n")
 	return
 }
 
@@ -164,7 +166,6 @@ func (h *handle) Setup(session sarama.ConsumerGroupSession) error {
 }
 
 func (h *handle) Cleanup(session sarama.ConsumerGroupSession) error {
-	log.Info("session Cleanup")
 	return nil
 }
 
@@ -174,7 +175,7 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 	for {
 		select {
 		case <-session.Context().Done():
-			log.Info("topic:%s, partition:%d session exit, waiting and processing the buffers", claim.Topic(), claim.Partition())
+			log.Warn("topic:%s, partition:%d session exit, waiting and processing the buffers", claim.Topic(), claim.Partition())
 			h.wg.Wait()
 			return nil
 		case <-logTick.C:

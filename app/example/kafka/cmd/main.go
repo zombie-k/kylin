@@ -18,7 +18,7 @@ func main() {
 	}
 
 	srv := service.New(conf.Conf)
-	consumer, err := kafka.NewConsumer(conf.Conf, srv.Parser(conf.Conf.Kafka.Name))
+	consumer, err := kafka.NewConsumer(conf.Conf.Kafka, srv.Parser(conf.Conf.Kafka.Consume.Name))
 	if err != nil {
 		panic(err)
 	}
@@ -26,11 +26,11 @@ func main() {
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	for {
 		s := <-c
-		log.Info("get a signal %s", s.String())
+		log.Warn("get a signal %s", s.String())
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			consumer.Stop()
-			log.Info("exiting...")
+			log.Warn("exit")
 			return
 		case syscall.SIGHUP:
 		default:

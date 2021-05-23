@@ -5,7 +5,11 @@ import (
 )
 
 type Config struct {
-	Kafka *kafkaConf
+	Consume *kafkaConf
+	Job     struct{
+		Worker int
+		Buffer int
+	}
 }
 
 type kafkaConf struct {
@@ -26,9 +30,9 @@ type kafkaConf struct {
 	}
 }
 
-func (c *Config) Validate() error {
-	if c.Kafka == nil {
-		c.Kafka = &kafkaConf{
+func (c *Config) Builder() error {
+	if c.Consume == nil {
+		c.Consume = &kafkaConf{
 			Name:       "kylin",
 			Brokers:    []string{},
 			Topics:     []string{},
@@ -37,13 +41,19 @@ func (c *Config) Validate() error {
 			OffsetMode: "latest",
 			Rebalance:  "range",
 		}
-		c.Kafka.Sasl.Enable = true
-		c.Kafka.Sasl.Mechanism = sarama.SASLTypePlaintext
-		c.Kafka.Sasl.User = ""
-		c.Kafka.Sasl.Password = ""
+		c.Consume.Sasl.Enable = true
+		c.Consume.Sasl.Mechanism = sarama.SASLTypePlaintext
+		c.Consume.Sasl.User = ""
+		c.Consume.Sasl.Password = ""
 	}
-	if _, err := sarama.ParseKafkaVersion(c.Kafka.Version); err != nil {
+	if _, err := sarama.ParseKafkaVersion(c.Consume.Version); err != nil {
 		return err
+	}
+	if c.Job.Worker <= 0 {
+		c.Job.Worker = 1
+	}
+	if c.Job.Buffer <= 0 {
+		c.Job.Buffer = 1
 	}
 	return nil
 }
