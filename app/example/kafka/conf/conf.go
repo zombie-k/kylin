@@ -6,6 +6,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/zombie-k/kylin/library/log"
 	"github.com/zombie-k/kylin/library/pkg/kafka"
+	xtime "github.com/zombie-k/kylin/library/time"
 )
 
 var (
@@ -20,6 +21,9 @@ func init() {
 type Config struct {
 	Kafka *kafka.Config
 	Log *log.Config
+	Core struct{
+		Sleep xtime.Duration
+	}
 }
 
 func Init() error {

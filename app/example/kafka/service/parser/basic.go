@@ -1,7 +1,19 @@
 package parser
 
-import xtime "github.com/zombie-k/kylin/library/time"
+import (
+	"time"
+)
 
 type Basic struct {
-	Sleep xtime.Duration
+	Sleep time.Duration
+}
+
+type BasicOption struct {
+	F func (*Basic)
+}
+
+func BasicSleepingTime(d time.Duration) BasicOption {
+	return BasicOption{func(b *Basic) {
+		b.Sleep = d
+	}}
 }

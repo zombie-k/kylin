@@ -14,11 +14,17 @@ type parser struct{
 	basic.Basic
 }
 
-func New() *parser {
-	return &parser{}
+func New(opts ...basic.BasicOption) *parser {
+	basicOption := basic.Basic{}
+	for _, opt := range opts {
+		opt.F(&basicOption)
+	}
+	return &parser{basicOption}
 }
 
 func (p *parser) Messages(message *kafka.Message) {
 	log.Info("%s %s %d %d %s %s", message.Timestamp.Format(xtime.LongDateFormatter), message.Topic, message.Partition, message.Offset, message.Key, message.Value)
-	time.Sleep(time.Second * 1)
+	if p.Sleep > 0 {
+		time.Sleep(p.Sleep)
+	}
 }
