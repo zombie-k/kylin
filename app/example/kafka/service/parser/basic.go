@@ -9,7 +9,7 @@ type Basic struct {
 }
 
 type BasicOption struct {
-	F func (*Basic)
+	F func(*Basic)
 }
 
 func BasicSleepingTime(d time.Duration) BasicOption {

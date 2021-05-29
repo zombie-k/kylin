@@ -101,7 +101,7 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		ctx:    ctx,
 		cancel: cancel,
 		wg:     &sync.WaitGroup{},
-		job:    fanout.New("kafka", fanout.Worker(c.Job.Worker), fanout.Buffer(c.Job.Buffer)),
+		job:    fanout.New("kafka", fanout.Worker(c.Consume.Job.Worker), fanout.Buffer(c.Consume.Job.Buffer)),
 	}
 
 	consumer.handle.consumer = consumer
@@ -143,10 +143,10 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		}
 	}()
 
-	log.Warn("Topic:%s", c.Consume.Topics)
-	log.Warn("Group:%s", c.Consume.Group)
+	log.Debug("Topic:%s", c.Consume.Topics)
+	log.Debug("Group:%s", c.Consume.Group)
 	<-consumer.handle.ready
-	log.Warn("Kylin consumer up and running!...\n")
+	log.Debug("Kylin consumer up and running!...\n")
 	return
 }
 
@@ -175,11 +175,11 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 	for {
 		select {
 		case <-session.Context().Done():
-			log.Warn("topic:%s, partition:%d session exit, waiting and processing the buffers", claim.Topic(), claim.Partition())
+			log.Debug("topic:%s, partition:%d session exit, waiting and processing the buffers", claim.Topic(), claim.Partition())
 			h.wg.Wait()
 			return nil
 		case <-logTick.C:
-			log.Warn("topic:%s, partition:%d, channel buffer size:%d", claim.Topic(), claim.Partition(), h.consumer.job.Channel())
+			log.Debug("topic:%s, partition:%d, channel buffer size:%d", claim.Topic(), claim.Partition(), h.consumer.job.Channel())
 		case msg, ok := <-claim.Messages():
 			if !ok {
 				return nil

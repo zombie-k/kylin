@@ -1,9 +1,17 @@
 package kafka
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type Messager interface {
 	Messages(message *Message)
+}
+
+type Loader interface {
+	Inputs() <-chan *Message
+	Start(ctx context.Context)
 }
 
 type Message struct {

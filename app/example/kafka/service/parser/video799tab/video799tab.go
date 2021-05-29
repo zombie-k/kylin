@@ -10,7 +10,7 @@ import (
 
 const Name = "video799tab"
 
-type parser struct{
+type parser struct {
 	basic.Basic
 }
 

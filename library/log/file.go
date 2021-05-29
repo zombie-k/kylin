@@ -76,6 +76,8 @@ func (h *FileHandler) Log(ctx context.Context, lv Level, args ...D) {
 	d := DToMap(args...)
 	var w io.Writer
 	switch lv {
+	case _debugLevel:
+		w = h.fws[_infoLevel]
 	case _warnLevel:
 		w = h.fws[_idxWarn]
 	case _errorLevel:

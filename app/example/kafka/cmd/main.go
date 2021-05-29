@@ -26,11 +26,11 @@ func main() {
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	for {
 		s := <-c
-		log.Warn("get a signal %s", s.String())
+		log.Debug("get a signal %s", s.String())
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			consumer.Stop()
-			log.Warn("exit")
+			log.Debug("exit")
 			return
 		case syscall.SIGHUP:
 		default:

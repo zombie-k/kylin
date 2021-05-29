@@ -20,8 +20,8 @@ func init() {
 
 type Config struct {
 	Kafka *kafka.Config
-	Log *log.Config
-	Core struct{
+	Log   *log.Config
+	Core  struct {
 		Sleep xtime.Duration
 	}
 }
