@@ -248,8 +248,9 @@ func NewConn(c *Config) (cn Conn, err error) {
 	rdop := DialReadTimeout(time.Duration(c.ReadTimeout))
 	wrop := DialWriteTimeout(time.Duration(c.WriteTimeout))
 	auop := DialPassword(c.Auth)
+	dbop := DialDatabase(c.Db)
 	// new conn
-	cn, err = Dial(c.Proto, c.Addr, cnop, rdop, wrop, auop)
+	cn, err = Dial(c.Proto, c.Addr, cnop, rdop, wrop, auop, dbop)
 	return
 }
 
