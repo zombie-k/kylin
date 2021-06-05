@@ -25,6 +25,10 @@ type Render interface {
 	RenderString(w io.Writer, d map[string]interface{}) string
 }
 
+func Brief(format string, args ...interface{}) {
+	logH.Log(context.Background(), _noLevel, KVString(_log, fmt.Sprintf(format, args...)))
+}
+
 func Debug(format string, args ...interface{}) {
 	logH.Log(context.Background(), _debugLevel, KVString(_log, fmt.Sprintf(format, args...)))
 }

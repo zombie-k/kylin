@@ -9,6 +9,7 @@ const (
 	_errorLevel
 	_fatalLevel
 	_accessLevel
+	_noLevel
 )
 
 var levelName = [...]string{
@@ -18,6 +19,7 @@ var levelName = [...]string{
 	_errorLevel:  "ERROR",
 	_fatalLevel:  "FATAL",
 	_accessLevel: "ACCESS",
+	_noLevel:     "",
 }
 
 func (l Level) String() string {

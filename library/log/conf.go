@@ -10,7 +10,7 @@ var (
 )
 
 func init() {
-	logH = newHandlers([]string{}, NewStdout(""))
+	logH = newHandlers([]string{}, NewStdout("%M"))
 }
 
 func Init(conf *Config) {
