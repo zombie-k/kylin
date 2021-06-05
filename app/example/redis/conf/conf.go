@@ -10,24 +10,24 @@ type Config struct {
 }
 
 type RdConfig struct {
-	Name string
-	DB int
-	Idle int
-	Active int
-	Addrs []string
+	Name     string
+	DB       int
+	Idle     int
+	Active   int
+	Addrs    []string
 	HashExpr string
-	Zlib bool
-	Json bool
-	Prefix string
-	Suffix string
+	Zlib     bool
+	Json     bool
+	Prefix   string
+	Suffix   string
 }
 
 var (
 	confPath string
-	Conf = &Config{}
-	_idle = 10
-	_active = 10
-	_db = 0
+	Conf     = &Config{}
+	_idle    = 10
+	_active  = 10
+	_db      = 0
 )
 
 func init() {

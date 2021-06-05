@@ -83,6 +83,9 @@ func execRandomKey(conn redis.Conn) string {
 
 func exec2(conn redis.Conn, key string) {
 	val, err := redis.Bytes(conn.Do("GET", key))
+	if len(val) == 0 {
+		return
+	}
 	if _zlib {
 		val, err = compress.UnCompress(val)
 		if err != nil {
