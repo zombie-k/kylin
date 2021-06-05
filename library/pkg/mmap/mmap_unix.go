@@ -1,6 +1,8 @@
 package mmap
 
-import "golang.org/x/sys/unix"
+import (
+	"golang.org/x/sys/unix"
+)
 
 func mmap(length int, inprot, inflags int, fd uintptr, offset int64) ([]byte, error) {
 	flags := unix.MAP_SHARED
@@ -20,12 +22,4 @@ func mmap(length int, inprot, inflags int, fd uintptr, offset int64) ([]byte, er
 		return nil, err
 	}
 	return b, err
-}
-
-func (m MMap) flush() error {
-	return unix.Msync(m, unix.MS_SYNC)
-}
-
-func (m MMap) unmap() error {
-	return unix.Munmap(m)
 }
