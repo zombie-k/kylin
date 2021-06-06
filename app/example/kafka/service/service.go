@@ -19,13 +19,13 @@ func New(c *conf.Config) (s *Service) {
 		loaderMap: make(map[string]func() kafka.Loader),
 	}
 
-	s.ServiceRegister()
+	s.ServiceRegisterParser()
 	s.ServiceRegisterLoader()
 
 	return
 }
 
-func (s *Service) Register(name string, parser kafka.Messager) {
+func (s *Service) RegisterParser(name string, parser kafka.Messager) {
 	if _, ok := s.parserMap[name]; ok {
 		panic(fmt.Sprintf("%s already register", name))
 	}

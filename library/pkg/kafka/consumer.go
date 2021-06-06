@@ -2,7 +2,6 @@ package kafka
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/zombie-k/kylin/library/log"
@@ -34,7 +33,7 @@ func (consumer *Consumer) Stop() {
 
 func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 	if parser == nil {
-		return nil, errors.New("parser must not empty")
+		parser = DefaultProcessor()
 	}
 	version, err := sarama.ParseKafkaVersion(c.Consume.Version)
 	if err != nil {

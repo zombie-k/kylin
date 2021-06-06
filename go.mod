@@ -17,6 +17,7 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475
 	github.com/stretchr/testify v1.7.0
 	github.com/zombie-k/rpc v0.0.1
+	golang.org/x/sys v0.0.0-20210423082822-04245dca01da
 	google.golang.org/grpc v1.35.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect

@@ -3,11 +3,13 @@ package service
 import (
 	basic "github.com/zombie-k/kylin/app/example/kafka/service/parser"
 	"github.com/zombie-k/kylin/app/example/kafka/service/parser/minimalism"
+	"github.com/zombie-k/kylin/app/example/kafka/service/parser/video799tab"
 	"time"
 )
 
-func (s *Service) ServiceRegister() {
-	s.Register(minimalism.Name, minimalism.Parser(basic.BasicSleepingTime(time.Duration(s.c.Core.Sleep))))
+func (s *Service) ServiceRegisterParser() {
+	s.RegisterParser(minimalism.Name, minimalism.Parser(basic.BasicSleepingTime(time.Duration(s.c.Core.Sleep))))
+	s.RegisterParser(video799tab.Name, video799tab.Parser())
 }
 
 func (s *Service) ServiceRegisterLoader() {
