@@ -9,7 +9,7 @@ import (
 
 func (s *Service) ServiceRegisterParser() {
 	s.RegisterParser(minimalism.Name, minimalism.Parser(basic.BasicSleepingTime(time.Duration(s.c.Core.Sleep))))
-	s.RegisterParser(video799tab.Name, video799tab.Parser())
+	s.RegisterParser(video799tab.Name, video799tab.Parser(s.c))
 }
 
 func (s *Service) ServiceRegisterLoader() {

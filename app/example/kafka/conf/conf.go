@@ -26,6 +26,10 @@ type Config struct {
 	}
 }
 
+func (c *Config) GetConfig() interface{} {
+	return c
+}
+
 func Init() error {
 	if confPath == "" {
 		return errors.New("confPath nil")

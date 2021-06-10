@@ -200,6 +200,7 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 			}); err != nil {
 				h.wg.Done()
 			}
+			session.MarkMessage(msg, "")
 		}
 	}
 }

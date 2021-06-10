@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+type Configure interface {
+	GetConfig() interface{}
+}
+
 type Config struct {
 	Consume *kafkaConf
 	Produce *ProduceConf
