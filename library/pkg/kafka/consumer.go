@@ -15,9 +15,10 @@ type Consumer struct {
 	c      *Config
 	config *sarama.Config
 
-	client sarama.ConsumerGroup
-	handle *handle
-	parser Messager
+	consumerGroup sarama.ConsumerGroup
+	client        sarama.Client
+	handle        *handle
+	parser        Messager
 
 	ctx    context.Context
 	cancel func()
@@ -81,15 +82,27 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		}
 	}
 
-	client, err := sarama.NewConsumerGroup(c.Consume.Brokers, c.Consume.Group, config)
+	/*
+		client, err := sarama.NewConsumerGroup(c.Consume.Brokers, c.Consume.Group, config)
+		if err != nil {
+			return nil, err
+		}
+	*/
+	client, err := sarama.NewClient(c.Consume.Brokers, config)
 	if err != nil {
+		return nil, err
+	}
+	consumeGroup, err := sarama.NewConsumerGroupFromClient(c.Consume.Group, client)
+	if err != nil {
+		_ = client.Close()
 		return nil, err
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	consumer = &Consumer{
-		config: config,
-		client: client,
+		config:        config,
+		client:        client,
+		consumerGroup: consumeGroup,
 		handle: &handle{
 			ready:       make(chan bool, 0),
 			name:        c.Consume.Name,
@@ -112,10 +125,10 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 			case <-consumer.ctx.Done():
 				log.Warn("Terminating: context cancelled")
 				return
-			case err := <-consumer.client.Errors():
+			case err := <-consumer.consumerGroup.Errors():
 				log.Error("%s", err.Error())
 			default:
-				if err := consumer.client.Consume(consumer.ctx, c.Consume.Topics, consumer.handle); err != nil {
+				if err := consumer.consumerGroup.Consume(consumer.ctx, c.Consume.Topics, consumer.handle); err != nil {
 					switch err {
 					case sarama.ErrClosedClient, sarama.ErrClosedConsumerGroup:
 						log.Error("%v", err)
@@ -137,8 +150,8 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 	}()
 	go func() {
 		consumer.wg.Wait()
-		if err := client.Close(); err != nil {
-			log.Error("Error closing client: %v", err)
+		if err := consumeGroup.Close(); err != nil {
+			log.Error("Error closing consumerGroup: %v", err)
 		}
 	}()
 

@@ -130,46 +130,46 @@ type Conn interface {
 	//
 	Scan(item *Item, v interface{}) (err error)
 
-	// Add writes the given item, if no value already exists for its key.
+	// AddContext writes the given item, if no value already exists for its key.
 	// ErrNotStored is returned if that condition is not met.
 	AddContext(ctx context.Context, item *Item) error
 
-	// Set writes the given item, unconditionally.
+	// SetContext writes the given item, unconditionally.
 	SetContext(ctx context.Context, item *Item) error
 
-	// Replace writes the given item, but only if the server *does* already
+	// ReplaceContext writes the given item, but only if the server *does* already
 	// hold data for this key.
 	ReplaceContext(ctx context.Context, item *Item) error
 
-	// Get sends a command to the server for gets data.
+	// GetContext sends a command to the server for gets data.
 	GetContext(ctx context.Context, key string) (*Item, error)
 
-	// GetMulti is a batch version of Get. The returned map from keys to items
+	// GetMultiContext is a batch version of Get. The returned map from keys to items
 	// may have fewer elements than the input slice, due to memcache cache
 	// misses. Each key must be at most 250 bytes in length.
 	// If no error is returned, the returned map will also be non-nil.
 	GetMultiContext(ctx context.Context, keys []string) (map[string]*Item, error)
 
-	// Delete deletes the item with the provided key.
+	// DeleteContext deletes the item with the provided key.
 	// The error ErrNotFound is returned if the item didn't already exist in
 	// the cache.
 	DeleteContext(ctx context.Context, key string) error
 
-	// Increment atomically increments key by delta. The return value is the
+	// IncrementContext atomically increments key by delta. The return value is the
 	// new value after being incremented or an error. If the value didn't exist
 	// in memcached the error is ErrNotFound. The value in memcached must be
 	// an decimal number, or an error will be returned.
 	// On 64-bit overflow, the new value wraps around.
 	IncrementContext(ctx context.Context, key string, delta uint64) (newValue uint64, err error)
 
-	// Decrement atomically decrements key by delta. The return value is the
+	// DecrementContext atomically decrements key by delta. The return value is the
 	// new value after being decremented or an error. If the value didn't exist
 	// in memcached the error is ErrNotFound. The value in memcached must be
 	// an decimal number, or an error will be returned. On underflow, the new
 	// value is capped at zero and does not wrap around.
 	DecrementContext(ctx context.Context, key string, delta uint64) (newValue uint64, err error)
 
-	// CompareAndSwap writes the given item that was previously returned by
+	// CompareAndSwapContext writes the given item that was previously returned by
 	// Get, if the value was neither modified or evicted between the Get and
 	// the CompareAndSwap calls. The item's Key should not change between calls
 	// but all other item fields may differ. ErrCASConflict is returned if the
@@ -177,7 +177,7 @@ type Conn interface {
 	// ErrNotStored is returned if the value was evicted in between the calls.
 	CompareAndSwapContext(ctx context.Context, item *Item) error
 
-	// Touch updates the expiry for the given key. The seconds parameter is
+	// TouchContext updates the expiry for the given key. The seconds parameter is
 	// either a Unix timestamp or, if seconds is less than 1 month, the number
 	// of seconds into the future at which time the item will expire.
 	// ErrNotFound is returned if the key is not in the cache. The key must be
