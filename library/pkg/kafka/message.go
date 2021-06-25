@@ -32,4 +32,7 @@ type Message struct {
 
 	// Message timestamp
 	Timestamp time.Time
+
+	// Message high water mark offset of the partition
+	HighWaterMarkOffset int64
 }

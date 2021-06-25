@@ -98,18 +98,22 @@ func (c *Config) Builder() error {
 	if c.Consume == nil && c.Produce == nil {
 		return errors.New("missing configuration consume or produce")
 	}
-	if _, err := sarama.ParseKafkaVersion(c.Consume.Version); err != nil {
-		return err
-	}
-	if c.Consume.Job.Worker <= 0 {
-		c.Consume.Job.Worker = 1
-	}
-	if c.Consume.Job.Buffer <= 0 {
-		c.Consume.Job.Buffer = 1
+	if c.Consume != nil {
+		if _, err := sarama.ParseKafkaVersion(c.Consume.Version); err != nil {
+			return err
+		}
+		if c.Consume.Job.Worker <= 0 {
+			c.Consume.Job.Worker = 1
+		}
+		if c.Consume.Job.Buffer <= 0 {
+			c.Consume.Job.Buffer = 1
+		}
 	}
 
-	if err := c.produceBuilder(); err != nil {
-		return err
+	if c.Produce != nil {
+		if err := c.produceBuilder(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

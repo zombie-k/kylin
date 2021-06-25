@@ -14,21 +14,19 @@ import (
 const Name = "minimalism"
 
 type parser struct {
-	basic.Basic
+	configure kafka.Configure
 }
 
-func Parser(opts ...basic.BasicOption) *parser {
-	basicOption := basic.Basic{}
-	for _, opt := range opts {
-		opt.F(&basicOption)
-	}
-	return &parser{basicOption}
+func Parser(configure kafka.Configure) *parser {
+	return &parser{configure: configure}
 }
 
 func (p *parser) Messages(message *kafka.Message) {
-	log.Info("%s %s %d %d %s %s", message.Timestamp.Format(xtime.LongDateFormatter), message.Topic, message.Partition, message.Offset, message.Key, message.Value)
-	if p.Sleep > 0 {
-		time.Sleep(p.Sleep)
+	//log.Info("%s %s %d %d %s %s", message.Timestamp.Format(xtime.LongDateFormatter), message.Topic, message.Partition, message.Offset, message.Key, message.Value)
+	log.Info("%s %s %d %d %d %d", message.Timestamp.Format(xtime.LongDateFormatter), message.Topic, message.Partition, message.Offset, message.HighWaterMarkOffset, message.HighWaterMarkOffset-message.Offset)
+	asleep := time.Duration(p.configure.GetConfig().(*conf.Config).Core.Sleep)
+	if asleep > 0 {
+		//time.Sleep(asleep)
 	}
 }
 

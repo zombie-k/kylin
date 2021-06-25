@@ -106,7 +106,7 @@ func NewConsumer(c *Config, parser Messager) (consumer *Consumer, err error) {
 		handle: &handle{
 			ready:       make(chan bool, 0),
 			name:        c.Consume.Name,
-			logInterval: 30 * time.Second,
+			logInterval: 10 * time.Second,
 			wg:          &sync.WaitGroup{},
 		},
 		parser: parser,
@@ -191,7 +191,12 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 			h.wg.Wait()
 			return nil
 		case <-logTick.C:
-			log.Debug("topic:%s, partition:%d, channel buffer size:%d", claim.Topic(), claim.Partition(), h.consumer.job.Channel())
+			log.Debug("topic:%s, partition:%d, initialOffset:%d, highWaterMarkOffset:%d, channel buffer size:%d",
+				claim.Topic(),
+				claim.Partition(),
+				claim.InitialOffset(),
+				claim.HighWaterMarkOffset(),
+				h.consumer.job.Channel())
 		case msg, ok := <-claim.Messages():
 			if !ok {
 				return nil
@@ -202,12 +207,13 @@ func (h *handle) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.
 					h.wg.Done()
 				}()
 				message := &Message{
-					Key:       msg.Key,
-					Value:     msg.Value,
-					Offset:    msg.Offset,
-					Partition: msg.Partition,
-					Topic:     msg.Topic,
-					Timestamp: msg.Timestamp,
+					Key:                 msg.Key,
+					Value:               msg.Value,
+					Offset:              msg.Offset,
+					Partition:           msg.Partition,
+					Topic:               msg.Topic,
+					Timestamp:           msg.Timestamp,
+					HighWaterMarkOffset: claim.HighWaterMarkOffset(),
 				}
 				h.consumer.parser.Messages(message)
 			}); err != nil {
